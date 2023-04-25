@@ -15,14 +15,25 @@
 
 body {
   margin: 0;
-  height: 100vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
+  height: 100vh;
+  width: 100vw;
 }
 
 main {
   margin: auto;
   padding: 32px;
+}
+
+canvas {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  main {
+    width: auto;
+    height: 100%;
+    padding: 0px;
+  }
 }
