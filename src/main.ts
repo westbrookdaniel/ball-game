@@ -1,24 +1,39 @@
+import Game from './Game'
 import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+const _canvas = document.querySelector<HTMLCanvasElement>('canvas')
+if (!_canvas) throw new Error('Canvas not found')
+export const canvas = _canvas
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+const _ctx = canvas.getContext('2d')
+if (!_ctx) throw new Error('Canvas context not found')
+export const ctx = _ctx
+
+// internal resolution
+canvas.width = 64
+canvas.height = 64
+
+// background color
+canvas.style.background = 'black'
+
+// frame rate
+const fps = 60
+const interval = 1000 / fps
+let then: number
+
+const game = new Game()
+
+const render = (time: number) => {
+  if (then === undefined) then = time
+  const delta = time - then
+
+  window.requestAnimationFrame(render)
+
+  if (delta > interval) {
+    game.update()
+    then = time - (delta % interval)
+    return
+  }
+}
+
+window.requestAnimationFrame(render)
