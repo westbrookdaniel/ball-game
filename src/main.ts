@@ -1,39 +1,48 @@
-import Game from './Game'
+import * as PIXI from 'pixi.js'
 import './style.css'
 
-const _canvas = document.querySelector<HTMLCanvasElement>('canvas')
-if (!_canvas) throw new Error('Canvas not found')
-export const canvas = _canvas
+export const app = new PIXI.Application<HTMLCanvasElement>({
+  background: 'black',
+  height: 800,
+  width: 800,
+})
 
-const _ctx = canvas.getContext('2d')
-if (!_ctx) throw new Error('Canvas context not found')
-export const ctx = _ctx
+const root = document.querySelector<HTMLDivElement>('main')
+if (!root) throw new Error('Root not found')
+root.appendChild(app.view)
 
-// internal resolution
-canvas.width = 64
-canvas.height = 64
+/**
+ * Bouncing ball example
+ */
 
-// background color
-canvas.style.background = 'black'
+type Vec = [number, number]
 
-// frame rate
-const fps = 60
-const interval = 1000 / fps
-let then: number
+function createBall(r: number, [x, y]: Vec) {
+  const c = new PIXI.Graphics()
+  const vel: Vec = [7, 4]
 
-const game = new Game()
+  c.beginFill(0xffffff)
+  c.drawCircle(0, 0, r)
+  c.endFill()
 
-const render = (time: number) => {
-  if (then === undefined) then = time
-  const delta = time - then
+  c.x = x
+  c.y = y
 
-  window.requestAnimationFrame(render)
+  app.ticker.add((d) => {
+    c.x += vel[0] * d
+    c.y += vel[1] * d
 
-  if (delta > interval) {
-    game.update()
-    then = time - (delta % interval)
-    return
-  }
+    if (c.x + r > app.screen.width || c.x - r < 0) {
+      vel[0] *= -1
+    }
+
+    if (c.y + r > app.screen.height || c.y - r < 0) {
+      vel[1] *= -1
+    }
+  })
+
+  return c
 }
 
-window.requestAnimationFrame(render)
+const ball = createBall(30, [100, 100])
+app.stage.addChild(ball)
