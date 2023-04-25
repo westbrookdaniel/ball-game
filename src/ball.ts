@@ -12,7 +12,7 @@ export function createBall(r: number, [x, y]: Vec, vel: Vec) {
   c.x = x
   c.y = y
 
-  app.ticker.add((d) => {
+  function update(d: number) {
     c.x += vel[0] * d
     c.y += vel[1] * d
 
@@ -25,6 +25,17 @@ export function createBall(r: number, [x, y]: Vec, vel: Vec) {
       vel[1] *= -1
       c.y = Math.max(0, Math.min(app.screen.height - c.width, c.y))
     }
+  }
+
+  c.eventMode = 'dynamic'
+
+  c.on('pointerdown', () => {
+    c.destroy()
+  })
+
+  app.ticker.add(update)
+  c.on('destroyed', () => {
+    app.ticker.remove(update)
   })
 
   return c
