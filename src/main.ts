@@ -47,7 +47,7 @@ function update() {
   } else {
     const gameover = new PIXI.Text(`Score: ${score}`, {
       fontFamily: 'Arial',
-      fontSize: 64,
+      fontSize: 48,
       fill: 0xff1010,
       align: 'center',
     })
@@ -72,9 +72,9 @@ function startGame() {
   app.ticker.add(update)
 }
 
-const menu = new PIXI.Text('Click to start', {
+const menu = new PIXI.Text('Click all the balls to win\n\nClick to start', {
   fontFamily: 'Arial',
-  fontSize: 64,
+  fontSize: 48,
   fill: 0xff1010,
   align: 'center',
 })
@@ -86,7 +86,7 @@ app.stage.addChild(menu)
 
 menu.eventMode = 'dynamic'
 
-menu.once('click', () => {
+menu.once('pointerdown', () => {
   app.stage.removeChild(menu)
   startTime = app.ticker.lastTime
   startGame()
